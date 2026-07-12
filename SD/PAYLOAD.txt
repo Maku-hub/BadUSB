@@ -1,0 +1,24 @@
+REM Feature showcase for the payload parser (no OS-specific actions).
+REM This is the default payload (EXEC.cfg); open a text editor before running.
+
+REM 1) DEFAULT_DELAY inserts a pause before every following command.
+DEFAULT_DELAY 100
+
+REM 2) STRING types without a trailing Enter; STRINGLN adds one.
+STRING Line typed with STRING,
+STRING  continued on the same line.
+ENTER
+STRINGLN This whole line came from STRINGLN.
+
+REM 3) Explicit DELAY still works on top of DEFAULT_DELAY.
+DELAY 500
+
+REM 4) Chords: chained modifiers plus a final named or single key.
+STRING abc
+CTRL a
+DELAY 200
+DELETE
+
+REM 5) REPEAT re-runs the previous command N extra times.
+STRINGLN repeat me
+REPEAT 3

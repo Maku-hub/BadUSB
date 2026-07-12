@@ -1,0 +1,44 @@
+# --- Arduino / PlatformIO build artifacts ---
+build/
+*.hex
+*.elf
+*.bin
+*.eep
+*.lss
+*.map
+*.o
+*.d
+*.a
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# Arduino IDE 2.x / arduino-cli
+*.tmp
+/.theia/
+sketch/
+
+# --- Editors / IDE ---
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*~
+
+# --- Operating system ---
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+# macOS
+.DS_Store
+.AppleDouble
+# Linux
+*~
+.directory
+
+# --- Sensitive / local payloads ---
+# Uncomment if you don't want to publish your own payloads:
+# SD/PAYLOAD.txt
+# SD/P_*.txt
