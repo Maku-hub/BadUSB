@@ -5,6 +5,8 @@ programmable USB keyboard emulator (HID). Once plugged into a computer, the
 device replays keystroke sequences stored on a microSD card using a syntax
 similar to **DuckyScript** (Rubber Ducky).
 
+![connections](images/board.png)
+
 The project is intended for **authorized security testing, red-team exercises,
 education and research** — see the [Legal disclaimer](#legal-disclaimer).
 
@@ -12,18 +14,29 @@ education and research** — see the [Legal disclaimer](#legal-disclaimer).
 
 ## Table of contents
 
-- [Hardware](#hardware)
-- [Dependencies](#dependencies)
-- [Build and flash](#build-and-flash)
-- [SD card contents](#sd-card-contents)
-- [Operating modes (`MODE.cfg`)](#operating-modes-modecfg)
-- [Payload syntax](#payload-syntax)
-- [Management mode](#management-mode)
-- [Character map (`LANG.cfg`)](#character-map-langcfg)
-- [LED signalling](#led-signalling)
-- [Troubleshooting](#troubleshooting)
-- [Legal disclaimer](#legal-disclaimer)
-- [License](#license)
+- [BadUSB — ATMEGA32U4 keyboard emulator](#badusb--atmega32u4-keyboard-emulator)
+  - [Table of contents](#table-of-contents)
+  - [Hardware](#hardware)
+  - [Dependencies](#dependencies)
+  - [Build and flash](#build-and-flash)
+    - [Arduino IDE](#arduino-ide)
+    - [arduino-cli](#arduino-cli)
+  - [Repository layout](#repository-layout)
+  - [SD card contents](#sd-card-contents)
+  - [Operating modes (`MODE.cfg`)](#operating-modes-modecfg)
+  - [Payload syntax](#payload-syntax)
+    - [Timing control](#timing-control)
+    - [Text](#text)
+    - [Modifier keys / chords](#modifier-keys--chords)
+    - [Special keys (no argument)](#special-keys-no-argument)
+    - [Example](#example)
+    - [Validating payloads](#validating-payloads)
+  - [Management mode](#management-mode)
+  - [Character map (`LANG.cfg`)](#character-map-langcfg)
+  - [LED signalling](#led-signalling)
+  - [Troubleshooting](#troubleshooting)
+  - [Legal disclaimer](#legal-disclaimer)
+  - [License](#license)
 
 ---
 
