@@ -63,6 +63,7 @@ static const KeyCommand keyCommands[] = {
   {"UPARROW", KEY_UP_ARROW},       {"UP", KEY_UP_ARROW},
   {"BREAK", KEY_BREAK}, {"PAUSE", KEY_BREAK},
   {"CAPSLOCK", KEY_CAPS_LOCK},
+  {"BACKSPACE", KEY_BACKSPACE},
   {"DELETE", KEY_DELETE},
   {"END", KEY_END},
   {"ESC", KEY_ESC}, {"ESCAPE", KEY_ESC},
@@ -230,26 +231,45 @@ void writeConfig(const char *fileName, const String &data) {
 }
 
 // ---- HID output -------------------------------------------------------------
-// Press+release a printable character, optionally holding a modifier.
+// HID timing. Too-short values make the host drop keys or merge USB reports
+// (lost characters, stuck SHIFT); overly long values just make typing slow.
+//   charDelayMs - press/release spacing while typing STRING characters.
+//   keyHoldMs   - how long a named key / chord is held (kept well under the
+//                 host key-repeat threshold so keys never auto-repeat).
+//   settleMs    - pause after releaseAll() so the key/modifier release is seen
+//                 before the next command runs (prevents a modifier from a chord
+//                 bleeding into the following key, e.g. LEFT acting as SHIFT+LEFT).
+const int charDelayMs = 12;
+const int keyHoldMs   = 30;
+const int settleMs    = 40;
+
+// Press+release a printable character, optionally holding a modifier. Uses
+// explicit press/release with a gap (instead of Keyboard.write back-to-back) so
+// the host reliably registers each key even in a long STRING.
 void sendChar(byte out, byte modifier) {
   if (modifier) {
     Keyboard.press(modifier);
-    delay(5);
-    Keyboard.write(out);
-    delay(5);
-    Keyboard.release(modifier);
+    delay(charDelayMs);
+    Keyboard.press(out);
+    delay(charDelayMs);
+    Keyboard.releaseAll();
   } else {
-    Keyboard.write(out);
-    delay(5);
+    Keyboard.press(out);
+    delay(charDelayMs);
+    Keyboard.release(out);
   }
+  delay(charDelayMs);
 }
 
 // Press+release a special key. Special keys bypass the keymap on purpose:
 // their codes (0xB0-0xED) must never be remapped by LANG.cfg.
 void cmdPressKey(byte key) {
+  Keyboard.releaseAll(); // start from a clean report so no stray modifier rides
+  delay(charDelayMs);    // along with this key (e.g. LEFT arriving as SHIFT+LEFT)
   Keyboard.press(key);
-  delay(100);
+  delay(keyHoldMs);
   Keyboard.releaseAll();
+  delay(settleMs); // let the release register before the next command
 }
 
 // Returns the modifier key code for a modifier keyword, or 0 if the token is
@@ -272,7 +292,7 @@ void runCombo(File &f, byte mod1, byte mod2) {
   if (mod2) {
     Keyboard.press(mod2);
   }
-  delay(20);
+  delay(keyHoldMs);
 
   while (breakChar == ' ') {  // more tokens follow on this line
     parseCmd(f);
@@ -283,7 +303,7 @@ void runCombo(File &f, byte mod1, byte mod2) {
     byte mod = modifierFor(cmd);
     if (mod) {                // another modifier - add it and keep going
       Keyboard.press(mod);
-      delay(20);
+      delay(keyHoldMs);
       continue;
     }
 
@@ -304,8 +324,9 @@ void runCombo(File &f, byte mod1, byte mod2) {
     break;
   }
 
-  delay(100);
+  delay(keyHoldMs);
   Keyboard.releaseAll();
+  delay(settleMs); // let the release register so a modifier does not bleed on
 }
 
 // Types the rest of the current line (STRING) through the keymap.

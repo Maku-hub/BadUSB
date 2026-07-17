@@ -1,0 +1,222 @@
+REM ================================================================
+REM BadUSB keyboard emulator - FULL FEATURE SELF-TEST (Windows / Notepad)
+REM Opens Notepad and exercises every supported command, character and
+REM key combination. Observable tests are preceded by an "EXPECT:" line
+REM so actual vs. expected output can be compared afterwards.
+REM Assumes the host uses the US keyboard layout (LANG.cfg passthrough).
+REM Intentionally EXCLUDED (would abort the test): ALT F4 (closes window),
+REM CTRL ALT DELETE (security screen), GUI alone (Start menu), CTRL a
+REM (select-all would let a later STRING wipe the whole document).
+REM ================================================================
+
+REM --- timing setup (also tests DEFAULT_DELAY + DELAY) ---
+DEFAULT_DELAY 40
+DELAY 3000
+
+REM --- open Notepad (tests the GUI r chord) ---
+GUI r
+DELAY 800
+STRING notepad
+ENTER
+DELAY 1800
+
+STRINGLN ===== BadUSB EMULATOR SELF-TEST (US layout) =====
+STRINGLN Compare each RESULT line against its EXPECT line.
+ENTER
+
+REM ---------- [A] STRING: all printable ASCII ----------
+STRINGLN [A] STRING - printable ASCII
+STRINGLN EXPECT lower: abcdefghijklmnopqrstuvwxyz
+STRINGLN lower: abcdefghijklmnopqrstuvwxyz
+STRINGLN EXPECT upper: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+STRINGLN upper: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+STRINGLN EXPECT digit: 0123456789
+STRINGLN digit: 0123456789
+STRINGLN EXPECT sym1 : `~!@#$%^&*()-_=+
+STRINGLN sym1 : `~!@#$%^&*()-_=+
+STRINGLN EXPECT sym2 : [ ] { } \ | ; : ' "
+STRINGLN sym2 : [ ] { } \ | ; : ' "
+STRINGLN EXPECT sym3 : , . < > / ?
+STRINGLN sym3 : , . < > / ?
+ENTER
+
+REM ---------- [B] STRING (no Enter) vs STRINGLN (adds Enter) ----------
+STRINGLN [B] STRING vs STRINGLN
+STRING part1-
+STRING part2 (same line: STRING adds no Enter)
+ENTER
+STRINGLN part3 (STRINGLN added its own Enter)
+ENTER
+
+REM ---------- [C] REM must be invisible ----------
+STRINGLN [C] REM comment test
+REM If REM works, none of this REM text is typed.
+STRINGLN REM OK if no 'REM ...' text appears above this line.
+ENTER
+
+REM ---------- [D] Named keys: whitespace ----------
+STRINGLN [D] SPACE and TAB keys
+STRING SPACE key -> [
+SPACE
+STRINGLN ]
+STRING TAB key   -> [
+TAB
+STRINGLN ]
+ENTER
+
+REM ---------- [E] Named keys: navigation + editing ----------
+STRINGLN [E] navigation + editing keys
+STRINGLN EXPECT next line = aXbc   (LEFT; END returns caret to line end)
+STRING abc
+LEFT
+LEFT
+STRING X
+END
+ENTER
+STRINGLN EXPECT next line = abYc   (LEFT x2 + RIGHT)
+STRING abc
+LEFT
+LEFT
+RIGHT
+STRING Y
+END
+ENTER
+STRINGLN EXPECT next line = ac   (LEFT x2 + DELETE)
+STRING abc
+LEFT
+LEFT
+DELETE
+END
+ENTER
+STRINGLN EXPECT next line = abc   (type abcX, then BACKSPACE removes X)
+STRING abcX
+BACKSPACE
+END
+ENTER
+STRINGLN EXPECT next line = >abc<   (HOME + END)
+STRING abc
+HOME
+STRING >
+END
+STRING <
+ENTER
+STRINGLN EXPECT: 'first-UP' then 'second-DOWN'   (UP / DOWN / END)
+STRING first
+ENTER
+STRING second
+UP
+END
+STRING -UP
+DOWN
+END
+STRING -DOWN
+ENTER
+ENTER
+
+REM ---------- [F] Toggle keys ----------
+STRINGLN [F] toggle keys
+STRINGLN EXPECT next line = HELLO   (CAPSLOCK on, type hello, off)
+CAPSLOCK
+STRING hello
+CAPSLOCK
+ENTER
+STRINGLN NUMLOCK / SCROLLLOCK toggled twice (LED only, no text). No error LED = OK.
+NUMLOCK
+DELAY 150
+NUMLOCK
+SCROLLLOCK
+DELAY 150
+SCROLLLOCK
+ENTER
+
+REM ---------- [G] Function keys ----------
+STRINGLN [G] function keys (F5 inserts date/time in Notepad)
+STRINGLN EXPECT next line = current date and time   (F5)
+F5
+ENTER
+STRINGLN F1-F4, F6-F12 share this code path but have no visible Notepad effect.
+ENTER
+
+REM ---------- [H] SHIFT chord ----------
+STRINGLN [H] SHIFT chord
+STRINGLN EXPECT next line = QWE   (SHIFT q / SHIFT w / SHIFT e)
+SHIFT q
+SHIFT w
+SHIFT e
+ENTER
+ENTER
+
+REM ---------- [I] CTRL chords: copy / paste / cut ----------
+STRINGLN [I] CTRL chords - copy/paste/cut with SHIFT selection
+STRINGLN EXPECT: 'SRC12345' then 'pasted:SRC12345'   (SHIFT HOME + CTRL c + CTRL v)
+STRING SRC12345
+SHIFT HOME
+CTRL c
+END
+ENTER
+STRING pasted:
+CTRL v
+ENTER
+STRINGLN EXPECT next line = keep   (SHIFT LEFT x5 selects CUTME, CTRL x cuts it)
+STRING keepCUTME
+SHIFT LEFT
+SHIFT LEFT
+SHIFT LEFT
+SHIFT LEFT
+SHIFT LEFT
+CTRL x
+ENTER
+ENTER
+
+REM ---------- [J] chained modifiers (CTRL + SHIFT) ----------
+STRINGLN [J] chained modifiers CTRL SHIFT + arrow
+STRINGLN EXPECT next line = _chain   (CTRL SHIFT LEFT selects word, LEFT collapses, type _)
+STRING chain
+CTRL SHIFT LEFT
+LEFT
+STRING _
+END
+ENTER
+ENTER
+
+REM ---------- [K] CTRLALT legacy chord ----------
+STRINGLN [K] CTRLALT legacy chord (Ctrl+Alt) - host dependent, may type nothing
+CTRLALT t
+ENTER
+ENTER
+
+REM ---------- [L] REPEAT ----------
+STRINGLN [L] REPEAT command
+STRINGLN EXPECT: 'repeat-line' appears 4 times in total
+STRINGLN repeat-line
+REPEAT 3
+ENTER
+
+REM ---------- [M] keys with no visible text effect (fired dead last) ----------
+REM All text is typed FIRST, then the no-effect keys fire, so nothing they do
+REM can corrupt the captured output. PRINTSCREEN is intentionally NOT tested:
+REM on Windows 11 it opens the Snipping Tool overlay (steals focus, does not
+REM auto-close) and scrambles everything after it. Its code path (cmdPressKey)
+REM is identical to F5/HOME/etc., which are already verified above.
+STRINGLN [M] keys with no visible text effect (incl. aliases) - fired after this marker
+STRINGLN ===== SELF-TEST COMPLETE - compare every EXPECT vs RESULT line =====
+STRINGLN (Nothing should be typed below this line. MENU/APP open a context menu; ESC closes it.)
+DELAY 300
+ESC
+ESCAPE
+INSERT
+INSERT
+BREAK
+PAUSE
+PAGEUP
+PAGEDOWN
+UPARROW
+DOWNARROW
+LEFTARROW
+RIGHTARROW
+MENU
+DELAY 400
+ESC
+APP
+DELAY 400
+ESC

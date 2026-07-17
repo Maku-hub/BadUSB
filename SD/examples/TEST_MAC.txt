@@ -1,0 +1,221 @@
+REM ================================================================
+REM BadUSB keyboard emulator - FULL FEATURE SELF-TEST (macOS / TextEdit)
+REM Opens TextEdit via Spotlight and exercises every supported command,
+REM character and key combination. Observable tests use an "EXPECT:" line.
+REM Assumes US keyboard layout.
+REM
+REM macOS differences vs Windows/Linux, reflected below:
+REM   - Clipboard uses GUI (Cmd): GUI c / GUI v / GUI x  (not CTRL).
+REM   - Line start/end is GUI LEFT / GUI RIGHT (Cmd+Left/Right), not HOME/END.
+REM   - Word selection is ALT SHIFT LEFT (Option+Shift+Left), not CTRL SHIFT.
+REM   - No F5 date insert, no Menu/App/Insert/Break keys.
+REM TIP: turn OFF TextEdit smart quotes (Edit > Substitutions) or the ' and "
+REM in section [A] will appear as curly quotes - that is TextEdit, not the device.
+REM EXCLUDED (would abort the test): GUI q (quit), GUI w (close window),
+REM CTRL + arrows (switches Spaces).
+REM ================================================================
+
+REM --- timing setup (also tests DEFAULT_DELAY + DELAY) ---
+DEFAULT_DELAY 40
+DELAY 3000
+
+REM --- open TextEdit via Spotlight, then force a new blank document ---
+GUI SPACE
+DELAY 800
+STRING TextEdit
+DELAY 800
+ENTER
+DELAY 2500
+GUI n
+DELAY 1500
+
+STRINGLN ===== BadUSB EMULATOR SELF-TEST (macOS, US layout) =====
+STRINGLN Compare each RESULT line against its EXPECT line.
+ENTER
+
+REM ---------- [A] STRING: all printable ASCII ----------
+STRINGLN [A] STRING - printable ASCII
+STRINGLN EXPECT lower: abcdefghijklmnopqrstuvwxyz
+STRINGLN lower: abcdefghijklmnopqrstuvwxyz
+STRINGLN EXPECT upper: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+STRINGLN upper: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+STRINGLN EXPECT digit: 0123456789
+STRINGLN digit: 0123456789
+STRINGLN EXPECT sym1 : `~!@#$%^&*()-_=+
+STRINGLN sym1 : `~!@#$%^&*()-_=+
+STRINGLN EXPECT sym2 : [ ] { } \ | ; : ' "
+STRINGLN sym2 : [ ] { } \ | ; : ' "
+STRINGLN EXPECT sym3 : , . < > / ?
+STRINGLN sym3 : , . < > / ?
+ENTER
+
+REM ---------- [B] STRING (no Enter) vs STRINGLN (adds Enter) ----------
+STRINGLN [B] STRING vs STRINGLN
+STRING part1-
+STRING part2 (same line: STRING adds no Enter)
+ENTER
+STRINGLN part3 (STRINGLN added its own Enter)
+ENTER
+
+REM ---------- [C] REM must be invisible ----------
+STRINGLN [C] REM comment test
+REM If REM works, none of this REM text is typed.
+STRINGLN REM OK if no 'REM ...' text appears above this line.
+ENTER
+
+REM ---------- [D] Named keys: whitespace ----------
+STRINGLN [D] SPACE and TAB keys
+STRING SPACE key -> [
+SPACE
+STRINGLN ]
+STRING TAB key   -> [
+TAB
+STRINGLN ]
+ENTER
+
+REM ---------- [E] Named keys: navigation + editing ----------
+REM GUI RIGHT = Cmd+Right = jump to end of line (macOS has no line-END key).
+STRINGLN [E] navigation + editing keys
+STRINGLN EXPECT next line = aXbc   (LEFT; Cmd+Right returns caret to line end)
+STRING abc
+LEFT
+LEFT
+STRING X
+GUI RIGHT
+ENTER
+STRINGLN EXPECT next line = abYc   (LEFT x2 + RIGHT)
+STRING abc
+LEFT
+LEFT
+RIGHT
+STRING Y
+GUI RIGHT
+ENTER
+STRINGLN EXPECT next line = ac   (LEFT x2 + DELETE = forward delete)
+STRING abc
+LEFT
+LEFT
+DELETE
+GUI RIGHT
+ENTER
+STRINGLN EXPECT next line = abc   (type abcX, then BACKSPACE removes X)
+STRING abcX
+BACKSPACE
+GUI RIGHT
+ENTER
+STRINGLN EXPECT next line = >abc<   (Cmd+Left / Cmd+Right = line start/end)
+STRING abc
+GUI LEFT
+STRING >
+GUI RIGHT
+STRING <
+ENTER
+STRINGLN EXPECT: 'first-UP' then 'second-DOWN'   (UP / DOWN / Cmd+Right)
+STRING first
+ENTER
+STRING second
+UP
+GUI RIGHT
+STRING -UP
+DOWN
+GUI RIGHT
+STRING -DOWN
+ENTER
+ENTER
+
+REM ---------- [F] Toggle keys ----------
+REM NOTE: macOS debounces Caps Lock; a very short tap may not toggle. If HELLO
+REM comes out lowercase, that is the macOS caps-lock delay, not the device.
+STRINGLN [F] toggle keys
+STRINGLN EXPECT next line = HELLO   (CAPSLOCK on, type hello, off)
+CAPSLOCK
+STRING hello
+CAPSLOCK
+ENTER
+STRINGLN NUMLOCK / SCROLLLOCK fired (no effect on macOS). No error LED = OK.
+NUMLOCK
+DELAY 150
+NUMLOCK
+SCROLLLOCK
+DELAY 150
+SCROLLLOCK
+ENTER
+
+REM ---------- [G] Function keys ----------
+STRINGLN [G] function keys (no visible effect in TextEdit; just must not error)
+STRINGLN F5 fired below; TextEdit has no date insert, so expect no text.
+F5
+ENTER
+ENTER
+
+REM ---------- [H] SHIFT chord ----------
+STRINGLN [H] SHIFT chord
+STRINGLN EXPECT next line = QWE   (SHIFT q / SHIFT w / SHIFT e)
+SHIFT q
+SHIFT w
+SHIFT e
+ENTER
+ENTER
+
+REM ---------- [I] GUI (Cmd) chords: copy / paste / cut ----------
+STRINGLN [I] Cmd chords - copy/paste/cut with selection
+STRINGLN EXPECT: 'SRC12345' then 'pasted:SRC12345'   (Shift+Cmd+Left + Cmd c + Cmd v)
+STRING SRC12345
+SHIFT GUI LEFT
+GUI c
+GUI RIGHT
+ENTER
+STRING pasted:
+GUI v
+ENTER
+STRINGLN EXPECT next line = keep   (SHIFT LEFT x5 selects CUTME, Cmd x cuts it)
+STRING keepCUTME
+SHIFT LEFT
+SHIFT LEFT
+SHIFT LEFT
+SHIFT LEFT
+SHIFT LEFT
+GUI x
+ENTER
+ENTER
+
+REM ---------- [J] chained modifiers (ALT + SHIFT) ----------
+REM macOS word-left selection is Option(Alt)+Shift+Left, not Ctrl+Shift+Left.
+STRINGLN [J] chained modifiers ALT SHIFT + arrow
+STRINGLN EXPECT next line = _chain   (ALT SHIFT LEFT selects word, LEFT collapses, type _)
+STRING chain
+ALT SHIFT LEFT
+LEFT
+STRING _
+GUI RIGHT
+ENTER
+ENTER
+
+REM ---------- [K] CTRLALT legacy chord ----------
+STRINGLN [K] CTRLALT legacy chord (Ctrl+Option) - host dependent, may type nothing
+CTRLALT t
+ENTER
+ENTER
+
+REM ---------- [L] REPEAT ----------
+STRINGLN [L] REPEAT command
+STRINGLN EXPECT: 'repeat-line' appears 4 times in total
+STRINGLN repeat-line
+REPEAT 3
+ENTER
+
+REM ---------- [M] keys with no visible text effect (fired dead last) ----------
+REM Only keys that exist on a Mac keyboard are fired here. PRINTSCREEN, MENU,
+REM APP, INSERT, BREAK/PAUSE are omitted (no such keys / not meaningful on macOS).
+STRINGLN [M] keys with no visible text effect (incl. aliases) - fired after this marker
+STRINGLN ===== SELF-TEST COMPLETE - compare every EXPECT vs RESULT line =====
+STRINGLN (Nothing should be typed below this line.)
+DELAY 300
+ESC
+ESCAPE
+PAGEUP
+PAGEDOWN
+UPARROW
+DOWNARROW
+LEFTARROW
+RIGHTARROW

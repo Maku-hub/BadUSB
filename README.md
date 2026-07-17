@@ -188,8 +188,8 @@ GUI                   # tap the Windows key alone (no argument)
 
 ### Special keys (no argument)
 
-`ENTER`, `MENU`/`APP`, `SPACE`, `TAB`, `ESC`/`ESCAPE`, `CAPSLOCK`, `DELETE`,
-`INSERT`, `HOME`, `END`, `PAGEUP`, `PAGEDOWN`, `NUMLOCK`, `SCROLLLOCK`,
+`ENTER`, `MENU`/`APP`, `SPACE`, `TAB`, `ESC`/`ESCAPE`, `CAPSLOCK`, `BACKSPACE`,
+`DELETE`, `INSERT`, `HOME`, `END`, `PAGEUP`, `PAGEDOWN`, `NUMLOCK`, `SCROLLLOCK`,
 `PRINTSCREEN`, `BREAK`/`PAUSE`, `UP`/`UPARROW`, `DOWN`/`DOWNARROW`,
 `LEFT`/`LEFTARROW`, `RIGHT`/`RIGHTARROW`, `F1`–`F12`.
 
